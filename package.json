@@ -1,0 +1,30 @@
+{
+  "name": "kroton-tosvg",
+  "version": "0.0.0",
+  "description": "SVG output for Kroton",
+  "main": "kroton-tosvg.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sdangelo/kroton-tosvg.git"
+  },
+  "keywords": [
+    "kroton",
+    "math",
+    "layout",
+    "typesetting",
+    "svg"
+  ],
+  "author": "Stefano D'Angelo <zanga.mail@gmail.com> (http://sdangelo.github.io/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdangelo/kroton-tosvg/issues",
+    "email": "zanga.mail@gmail.com"
+  },
+  "peerDependencies": {
+    "kroton": "0.0.x",
+    "kroton-shaper": "0.0.x"
+  }
+}
