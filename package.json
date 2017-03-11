@@ -1,6 +1,6 @@
 {
   "name": "kroton-tosvg",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "SVG output for Kroton",
   "main": "kroton-tosvg.js",
   "scripts": {
