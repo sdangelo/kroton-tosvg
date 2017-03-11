@@ -15,7 +15,7 @@
  */
 
 module.exports = function (Kroton) {
-	Kroton.LayoutText.toSVG = function (classPrefix) {
+	Kroton.LayoutText.toSVG = function (classPrefix, scale) {
 		function encode(charCode) {
 			return String.fromCharCode(charCode)
 				     .replace(/&/, "&amp;")
@@ -24,6 +24,9 @@ module.exports = function (Kroton) {
 				     .replace(/</, "&lt;")
 				     .replace(/>/, "&gt;");
 		}
+
+		if (!scale)
+			scale = 16;
 
 		var s = '<text';
 		if (this.expression && this.expression.id)
@@ -42,20 +45,20 @@ module.exports = function (Kroton) {
 				k += (k ? ' ' : '') + classPrefix + 'bold';
 			s += k + '"';
 		}
-		s += ' y="' + (-this.y / this.scaleY) + '"';
+		s += ' y="' + (-scale * this.y / this.scaleY) + '"';
 		if (this.scaleX != 1 || this.scaleY != 1)
 			s += ' transform="scale(' + this.scaleX + ' '
 			     + this.scaleY + ')"';
 		s += '>';
 		for  (var i = 0; i < this.children.length; i++)
 			s += '<tspan x="'
-			     + (this.children[i].x / this.scaleX)
+			     + (scale * this.children[i].x / this.scaleX)
 			     + '">' + encode(this.children[i].charCode)
 			     + '</tspan>';
 		return s + '</text>';
 	};
 
-	Kroton.LayoutExpression.toSVG = function (classPrefix) {
+	Kroton.LayoutExpression.toSVG = function (classPrefix, scale) {
 		if (this.lineNumber)
 			return '';
 		var g = '';
@@ -73,12 +76,15 @@ module.exports = function (Kroton) {
 		for (var i = 0; i < this.children.length; i++) {
 			var l = this.children[i];
 			for (var j = 0; j < l.children.length; j++)
-				s += l.children[j].toSVG(classPrefix);
+				s += l.children[j].toSVG(classPrefix, scale);
 		}
 		return g ? g + s + '</g>' : s;
 	};
 
-	Kroton.LayoutPlaceholder.toSVG = function (classPrefix) {
+	Kroton.LayoutPlaceholder.toSVG = function (classPrefix, scale) {
+		if (!scale)
+			scale = 16;
+
 		var s = '';
 		var x = this.x;
 		if ((this.delimiterLeft || this.delimiterRight)
@@ -91,14 +97,15 @@ module.exports = function (Kroton) {
 				s += ' class="' + this.expression.class + '"';
 			s += '>';
 			if (this.delimiterLeft) {
-				s += this.delimiterLeft.toSVG(classPrefix);
+				s += this.delimiterLeft.toSVG(classPrefix,
+							      scale);
 				x += this.delimiterLeft.xAdvance;
 			}
 			s += '<use';
 		}
 		else {
 			if (this.delimiterLeft) {
-				s += this.delimiterLeft.toSVG(classPrefix);
+				s += this.delimiterLeft.toSVG(classPrefix, scale);
 				x += this.delimiterLeft.xAdvance;
 			}
 			s += '<use';
@@ -109,14 +116,14 @@ module.exports = function (Kroton) {
 					s += ' class="' + this.expression.class + '"';
 			}
 		}
-		s += ' x="' + (x / this.scaleX)
-		     + '" y="' + (-this.y / this.scaleY) + '"';
+		s += ' x="' + (scale * x / this.scaleX)
+		     + '" y="' + (-scale * this.y / this.scaleY) + '"';
 		if (this.scaleX != 1 || this.scaleY != 1)
 			s += ' transform="scale(' + this.scaleX + ' '
 			     + this.scaleY + ')"';
 		s += ' xlink:href="#' + this.expression.definition.id + '" />';
 		if (this.delimiterRight)
-			s += this.delimiterRight.toSVG(classPrefix);
+			s += this.delimiterRight.toSVG(classPrefix, scale);
 		if ((this.delimiterLeft || this.delimiterRight)
 		    && (this.expression.id || this.expression.class)) {
 			s += '</g>';
